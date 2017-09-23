@@ -1,0 +1,42 @@
+version: '2'
+services:
+  proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+  eth-pool-gui:
+    image: nginx
+    volumes:
+      - "./www/dist:/usr/share/nginx/html:ro"
+    links:
+      - eth-pool-api
+    environment:
+      - VIRTUAL_HOST=eth-pool.local
+  eth-pool-api:
+    build: .
+    links:
+      - redis
+      - eth-coind
+    ports:
+      - "8008:8008"
+      - "8888:8888"
+    environment:
+      - VIRTUAL_HOST=miners.eth-pool.local
+      - VIRTUAL_PORT=8080
+  eth-coind:
+    image: "ethereum/client-go"
+    volumes:
+      - "~/.ethereum/geth/chaindata:/root/.ethereum/geth/chaindata"
+      - "~/.ethereum/keystore:/root/.ethereum/keystore"
+    command: ["--rpc","--rpcaddr=0.0.0.0","--fast", "--cache=1024"]
+  redis:
+    image: "redis:alpine"
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+    - REDIS_HOSTS=local:redis:6379
+    ports:
+    - 8081:8081

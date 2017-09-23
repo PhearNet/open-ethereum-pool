@@ -15,14 +15,14 @@ module.exports = function(environment) {
 
     APP: {
       // API host and port
-      ApiUrl: '//example.net/',
+      ApiUrl: 'http://miners.eth-pool.local/',
 
       // HTTP mining endpoint
-      HttpHost: 'http://example.net',
+      HttpHost: 'http://miners.eth-pool.local',
       HttpPort: 8888,
 
       // Stratum mining endpoint
-      StratumHost: 'example.net',
+      StratumHost: 'stratum+tcp://miners.eth-pool.local',
       StratumPort: 8008,
 
       // Fee and payout details
@@ -57,9 +57,10 @@ module.exports = function(environment) {
     ENV.APP.rootElement = '#ember-testing';
   }
 
-  if (environment === 'production') {
-
-  }
+  // Configure and uncomment for production use
+  // if (environment === 'production') {
+  //   ENV.APP.ApiUrl = 'http://rtcdb.io/'
+  // }
 
   return ENV;
 };
